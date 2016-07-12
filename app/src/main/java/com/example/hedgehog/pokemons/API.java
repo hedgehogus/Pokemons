@@ -9,7 +9,7 @@ public class API {
 
     private static final String K_BASE_URL  =          "https://pokeapi.co/";
     private static final String API_GET_LIST =         "api/v1/pokemon/";
-    private static final String API_GET_PICTURE =      "/media/img/";
+    private static final String API_GET_PICTURE =      "media/img/";
 
 
 

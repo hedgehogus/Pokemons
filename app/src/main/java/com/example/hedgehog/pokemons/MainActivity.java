@@ -2,6 +2,10 @@ package com.example.hedgehog.pokemons;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,18 +17,22 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     FrameLayout flListContainer, flItemContainer;
     boolean isPort;
-    ListFragment listFragment;
+    static MyListFragment listFragment;
     FragmentManager fragmentManager;
     static final int LIMIT = 18;
     static int offset = 0;
+    AsyncTask<Integer,Void,Integer> at;
+    static ArrayList<Pokemon> arrayList= new ArrayList<>();
 
 
     @Override
@@ -40,13 +48,24 @@ public class MainActivity extends AppCompatActivity {
 
         //Toast.makeText(this, (isPort? "port": "land"), Toast.LENGTH_LONG).show();
 
-        listFragment = new ListFragment();
+        listFragment = new MyListFragment();
         fragmentManager = getFragmentManager();
+
+
+        at = new MyAsyncTask();
+
+        if (isNetworkExist(this)){
+           at.execute(LIMIT, offset);
+        }
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.flListContainer, listFragment, "listFragment");
         fragmentTransaction.commit();
-
-
     }
 
     static public class MyAsyncTask extends AsyncTask<Integer,Void,Integer> {
@@ -54,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected Integer doInBackground(Integer... params) {
             int limit = params [0];
-            int offset = params [2];
+            int offset = params [1];
 
             String responce = null;
             InputStream is = null;
@@ -63,8 +82,8 @@ public class MainActivity extends AppCompatActivity {
             try {
                 URL url = new URL(myurl);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setReadTimeout(10000 /* milliseconds */);
-                conn.setConnectTimeout(15000 /* milliseconds */);
+                conn.setReadTimeout(100000 /* milliseconds */);
+                conn.setConnectTimeout(150000 /* milliseconds */);
                 conn.setRequestMethod("GET");
                 conn.setDoInput(true);
                 conn.connect();
@@ -109,42 +128,94 @@ public class MainActivity extends AppCompatActivity {
                     Pokemon.PokeBuilder builder = new Pokemon.PokeBuilder(id, name, types);
 
                     int attack = object.optInt("attack");
-                    builder.setAttack(attack);
-
                     int defence = object.optInt("defense");
-                    builder.setDefence(defence);
-
                     int hp = object.optInt("hp");
-                    builder.setHP(hp);
-
                     int spAttack = object.optInt("sp_atk");
-                    builder.setSPAttack(spAttack);
-
                     int spDefence = object.optInt("sp_def");
-                    builder.setSPDefence(spDefence);
-
                     int speed = object.optInt("speed");
-                    builder.setSpeed(speed);
-
                     int weight = object.optInt("weight");
-                    builder.setWeight(weight);
-
                     JSONArray moves = object.optJSONArray("types");
                     int totalMoves = moves.length();
-                    builder.setTotalMoves(totalMoves);
+                    Pokemon pokemon = builder.setAttack(attack)
+                            .setDefence(defence)
+                            .setHP(hp)
+                            .setSPAttack(spAttack)
+                            .setSPDefence(spDefence)
+                            .setSpeed(speed)
+                            .setWeight(weight)
+                            .setTotalMoves(totalMoves)
+                            .build();
 
-                    Pokemon pokemon = builder.build();
+                    URL pictureUrl = new URL(API.getPicture(id));
 
+                    HttpURLConnection pictureConn = (HttpURLConnection) pictureUrl.openConnection();
+                    pictureConn.setReadTimeout(100000 /* milliseconds */);
+                    pictureConn.setConnectTimeout(150000 /* milliseconds */);
+                    pictureConn.setRequestMethod("GET");
+                    pictureConn.setDoInput(true);
+                    pictureConn.connect();
+                    int responseCode2 = conn.getResponseCode();
 
+                    InputStream pictureIS = pictureConn.getInputStream();
 
+                    Bitmap bitmap = null;
+
+                       bitmap = BitmapFactory.decodeStream(pictureIS);
+
+                    pokemon.setPicture(bitmap);
+
+                    arrayList.add(pokemon);
+
+                    if (pictureIS != null) {
+                        try {
+                            pictureIS.close();
+                        } catch (IOException e) {
+                            Log.d("asdf", e.getMessage());
+                        }
+                    }
                 }
 
+            } catch (Exception e) {
+                Log.d("asdf", e.getMessage());
+            }
+            finally {
+                if (is != null) {
+                    try {
+                        is.close();
+                    } catch (IOException e) {
+                        Log.d("asdf", e.getMessage());
+                    }
+                }
+            }
 
 
-            } catch (Exception e) {}
 
-
-            return null;
+            return 1;
         }
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+           // super.onPostExecute(integer);
+            listFragment.setNewArrayList(arrayList);
+
+        }
+    }
+
+    public static boolean isNetworkExist (Context context){
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        boolean result = false;
+
+        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE)!= null) {
+            result = result || connectivityManager.getNetworkInfo(connectivityManager.TYPE_MOBILE).isConnected();
+        } else {
+            result = result || true;
+        }
+        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI)!= null) {
+            result = result || connectivityManager.getNetworkInfo(connectivityManager.TYPE_WIFI).isConnected();
+        } else {
+            result = result || true;
+        }
+        return result;
+
     }
 }

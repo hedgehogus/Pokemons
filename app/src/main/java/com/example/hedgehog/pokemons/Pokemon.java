@@ -40,9 +40,9 @@ public class Pokemon {
     }
 
     public static class PokeBuilder {
-        int id;
-        String name;
-        String [] types;
+        int builderId;
+        String builderName;
+        String [] builderTypes;
         int attack = 0;
         int defence = 0;
         int hp = 0;
@@ -55,9 +55,9 @@ public class Pokemon {
 
 
         public PokeBuilder(int id, String name, String[] types){
-            this.id = id;
-            this.name = name;
-            this.types = types;
+            this.builderId = id;
+            this.builderName = name;
+            this.builderTypes = types;
         }
 
         public PokeBuilder setAttack(int attack){
@@ -93,11 +93,10 @@ public class Pokemon {
             return this;
         }
 
-        Pokemon pok = new Pokemon(id, name, types, attack, defence, hp, spAttack, spDefence, speed, weight, totalMoves);
-
 
         public Pokemon build(){
-            return this.pok;
+            Pokemon pok = new Pokemon(builderId, builderName, builderTypes, attack, defence, hp, spAttack, spDefence, speed, weight, totalMoves);
+            return pok;
         }
 
 
