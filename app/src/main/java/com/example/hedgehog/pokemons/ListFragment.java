@@ -8,7 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
-import android.os.AsyncTask;
+
 
 /**
  * Created by hedgehog on 12.07.2016.
@@ -34,13 +34,5 @@ public class ListFragment extends Fragment {
         return rootView;
     }
 
-    static public class MyAsyncTask extends AsyncTask<Integer,Void,Integer>{
 
-        @Override
-        protected Integer doInBackground(Integer... params) {
-            int limit = params [0];
-            int offset = params [2];
-            return null;
-        }
-    }
 }

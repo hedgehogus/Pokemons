@@ -7,66 +7,94 @@ import android.graphics.Bitmap;
  */
 public class Pokemon {
 
-    int id;
-    String name;
-    String [] types;
-    int attack;
-    int defence;
-    int hp;
-    int spAttack;
-    int spDefence;
-    int speed;
-    int weight;
-    int totalMoves;
+    final int id;
+    final String name;
+    final String [] types;
+    final int attack;
+    final int defence;
+    final int hp;
+    final int spAttack;
+    final int spDefence;
+    final int speed;
+    final int weight;
+    final int totalMoves;
     Bitmap picture;
 
-    private Pokemon(){}
+    private Pokemon(int id, String name, String[] types, int attack, int defence, int hp, int spAttack, int spDefence, int speed, int weight, int totalMoves){
+        this.id = id;
+        this.name = name;
+        this.types = types;
+        this.attack = attack;
+        this.defence = defence;
+        this.hp = hp;
+        this.spAttack = spAttack;
+        this.spDefence = spDefence;
+        this.speed = speed;
+        this.weight = weight;
+        this.totalMoves = totalMoves;
+    }
 
-    public static class PokeBuider {
-        Pokemon pok = new Pokemon();
+    public void setPicture(Bitmap picture){
+        this.picture = picture;
 
-        public PokeBuider(int id, String name, String[] types){
-            this.pok.id = id;
-            this.pok.name = name;
-            this.pok.types = types;
+    }
+
+    public static class PokeBuilder {
+        int id;
+        String name;
+        String [] types;
+        int attack = 0;
+        int defence = 0;
+        int hp = 0;
+        int spAttack = 0;
+        int spDefence = 0;
+        int speed = 0;
+        int weight = 0;
+        int totalMoves = 0;
+
+
+
+        public PokeBuilder(int id, String name, String[] types){
+            this.id = id;
+            this.name = name;
+            this.types = types;
         }
 
-        public PokeBuider setAttack(int attack){
-            this.pok.attack = attack;
+        public PokeBuilder setAttack(int attack){
+            this.attack = attack;
             return this;
         }
-        public PokeBuider setDefence(int defence){
-            this.pok.defence = defence;
+        public PokeBuilder setDefence(int defence){
+            this.defence = defence;
             return this;
         }
-        public PokeBuider setHP(int hp){
-            this.pok.hp = hp;
+        public PokeBuilder setHP(int hp){
+            this.hp = hp;
             return this;
         }
-        public PokeBuider setSPAttack(int spAttack){
-            this.pok.spAttack = spAttack;
+        public PokeBuilder setSPAttack(int spAttack){
+            this.spAttack = spAttack;
             return this;
         }
-        public PokeBuider setSPDefence(int spDefence){
-            this.pok.spDefence = spDefence;
+        public PokeBuilder setSPDefence(int spDefence){
+            this.spDefence = spDefence;
             return this;
         }
-        public PokeBuider setSpeed(int speed){
-            this.pok.speed = speed;
+        public PokeBuilder setSpeed(int speed){
+            this.speed = speed;
             return this;
         }
-        public PokeBuider setWeight(int weight){
-            this.pok.weight = weight;
+        public PokeBuilder setWeight(int weight){
+            this.weight = weight;
             return this;
         }
-        public PokeBuider setTotalMoves(int totalMoves){
-            this.pok.totalMoves = totalMoves;
+        public PokeBuilder setTotalMoves(int totalMoves){
+            this.totalMoves = totalMoves;
             return this;
         }
-        public PokeBuider setPicture(Bitmap picture){
-            this.pok.picture = picture;
-            return this;
-        }
+
+        Pokemon pok = new Pokemon(id, name, types, attack, defence, hp, spAttack, spDefence, speed, weight, totalMoves);
+
 
         public Pokemon build(){
             return this.pok;
