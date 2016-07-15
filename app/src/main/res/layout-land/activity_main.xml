@@ -3,8 +3,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     tools:context=".MainActivity">
+
+
+    <com.example.hedgehog.pokemons.LoadingView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/view"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="1" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
 
 
     <FrameLayout
@@ -22,4 +36,6 @@
         android:layout_height="match_parent"
         android:layout_gravity="center_vertical"
         android:background="#d8fee1"></FrameLayout>
+
+</LinearLayout>
 </LinearLayout>

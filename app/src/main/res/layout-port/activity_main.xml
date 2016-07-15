@@ -6,15 +6,27 @@
     android:orientation="horizontal"
     tools:context=".MainActivity">
 
-
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal|top">
     <FrameLayout
-        android:layout_width="0dp"
-        android:layout_weight="1"
+        android:layout_width="match_parent"
 
         android:id="@+id/flListContainer"
         android:layout_height="match_parent"
-        android:background="#f7c4c4" />
+        android:background="#f5d6d6" >
 
+
+
+    </FrameLayout>
+        <com.example.hedgehog.pokemons.LoadingView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/animView"
+            android:layout_gravity="center_horizontal|bottom" />
+    </LinearLayout>
 
 
 

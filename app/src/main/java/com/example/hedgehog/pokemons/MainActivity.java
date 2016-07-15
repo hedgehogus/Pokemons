@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.FrameLayout;
 
 import org.json.JSONArray;
@@ -31,8 +32,10 @@ public class MainActivity extends AppCompatActivity {
     FragmentManager fragmentManager;
     static final int LIMIT = 18;
     static int offset = 0;
+    LoadingView loadingView;
     AsyncTask<Integer,Void,Integer> at;
     static ArrayList<Pokemon> arrayList= new ArrayList<>();
+
 
 
     @Override
@@ -41,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         flListContainer = (FrameLayout) findViewById(R.id.flListContainer);
         flItemContainer = (FrameLayout) findViewById(R.id.flItemContainer);
+        loadingView = (LoadingView) findViewById(R.id.animView);
 
         if (flItemContainer == null){
             isPort = true;
@@ -48,8 +52,11 @@ public class MainActivity extends AppCompatActivity {
 
         //Toast.makeText(this, (isPort? "port": "land"), Toast.LENGTH_LONG).show();
 
+        flListContainer.setVisibility(View.GONE);
+
         listFragment = new MyListFragment();
         fragmentManager = getFragmentManager();
+        loadingView.startAnimation();
 
 
         at = new MyAsyncTask();
