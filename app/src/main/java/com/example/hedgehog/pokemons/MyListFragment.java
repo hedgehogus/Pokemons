@@ -23,8 +23,8 @@ public class MyListFragment extends Fragment {
 
     GridView gridView;
     Activity activity;
-    static final int NUM_PORT_COLUMNS = 2;
-    static final int NUM_LAND_COLUMNS = 3;
+    static final int NUM_COLUMNS = 2;
+
     ArrayList<Pokemon> pokemons;
     MyArrayAdapter adapter;
 
@@ -53,11 +53,8 @@ public class MyListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_list, null);
         gridView = (GridView) rootView.findViewById(R.id.gridView);
-        if (MainActivity.isPort){
-            gridView.setNumColumns(NUM_PORT_COLUMNS);
-        } else {
-            gridView.setNumColumns(NUM_LAND_COLUMNS);
-        }
+        gridView.setNumColumns(NUM_COLUMNS);
+
 
         pokemons = new ArrayList<>();
 
@@ -82,8 +79,13 @@ public class MyListFragment extends Fragment {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View rootView = inflater.inflate(R.layout.item_layout, parent, false);
+            View rootView = null;
+            if (convertView == null) {
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                rootView = inflater.inflate(R.layout.item_layout, parent, false);
+            } else{
+                rootView = convertView;
+            }
             ImageView ivPicture = (ImageView) rootView.findViewById(R.id.ivPicture);
             TextView tvName = (TextView) rootView.findViewById(R.id.tvName);
             TextView tvType = (TextView) rootView.findViewById(R.id.tvType);

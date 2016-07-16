@@ -11,7 +11,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     static AsyncTask<Integer,Void,Integer> at;
     static ArrayList<Pokemon> arrayList= new ArrayList<>();
     static boolean isLoadingNow = false;
+    Button bLoad;
 
 
 
@@ -46,34 +49,39 @@ public class MainActivity extends AppCompatActivity {
         flListContainer = (FrameLayout) findViewById(R.id.flListContainer);
         flItemContainer = (FrameLayout) findViewById(R.id.flItemContainer);
         loadingView = (LoadingView) findViewById(R.id.animView);
+        bLoad = (Button) findViewById(R.id.bLoad);
+        flListContainer.setVisibility(View.GONE);
+        bLoad.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                listFragment = new MyListFragment();
+                fragmentManager = getFragmentManager();
+                at = new MyAsyncTask();
+
+                if (isNetworkExist(getApplicationContext()) && !isLoadingNow) {
+                    at.execute(LIMIT, offset);
+                    loadingView.startAnimation1();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.add(R.id.flListContainer, listFragment, "listFragment");
+                    fragmentTransaction.commit();
+                    bLoad.setVisibility(View.GONE);
+
+                } else {
+                    Toast.makeText(getApplicationContext(), "No access to a network! Try again", Toast.LENGTH_LONG).show();
+                }
+
+
+            }
+        });
 
         if (flItemContainer == null){
             isPort = true;
         } else isPort = false;
 
-        //Toast.makeText(this, (isPort? "port": "land"), Toast.LENGTH_LONG).show();
 
-        flListContainer.setVisibility(View.GONE);
-
-        listFragment = new MyListFragment();
-        fragmentManager = getFragmentManager();
-
-
-
-        at = new MyAsyncTask();
-
-        if (isNetworkExist(this) && !isLoadingNow){
-           at.execute(LIMIT, offset);
-           loadingView.startAnimation1();
-
-        }
-
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.flListContainer, listFragment, "listFragment");
-        fragmentTransaction.commit();
 
     }
-
 
 
 
@@ -84,7 +92,8 @@ public class MainActivity extends AppCompatActivity {
         protected Integer doInBackground(Integer... params) {
             int limit = params [0];
             int tempOffset = params [1];
-            offset = offset + LIMIT;
+            int resp = 1;
+            offset = arrayList.size()+limit;
             isLoadingNow = true;
             Log.d("asdf", "" + limit + " " + tempOffset);
 
@@ -203,7 +212,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-            return 1;
+            return resp;
         }
 
         @Override

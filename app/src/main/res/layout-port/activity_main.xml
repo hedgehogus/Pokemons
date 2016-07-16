@@ -7,6 +7,14 @@
     android:background="@drawable/item_in_list"
     tools:context=".MainActivity">
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="LOAD"
+        android:background="@drawable/item_in_list"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/bLoad" />
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_weight="5"
