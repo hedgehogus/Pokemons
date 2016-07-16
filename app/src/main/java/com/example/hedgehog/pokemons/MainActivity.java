@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     FragmentManager fragmentManager;
     static final int LIMIT = 18;
     static int offset = 0;
-    LoadingView loadingView;
+    static LoadingView loadingView;
     AsyncTask<Integer,Void,Integer> at;
     static ArrayList<Pokemon> arrayList= new ArrayList<>();
 
@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
         listFragment = new MyListFragment();
         fragmentManager = getFragmentManager();
-        loadingView.startAnimation();
+        loadingView.startAnimation1();
 
 
         at = new MyAsyncTask();
@@ -65,15 +65,13 @@ public class MainActivity extends AppCompatActivity {
            at.execute(LIMIT, offset);
         }
 
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.flListContainer, listFragment, "listFragment");
         fragmentTransaction.commit();
+
     }
+
+
 
     static public class MyAsyncTask extends AsyncTask<Integer,Void,Integer> {
 

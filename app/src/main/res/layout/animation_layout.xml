@@ -4,41 +4,42 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:id="@+id/imageView1"
-        android:src="@drawable/loading"
+        android:background="@drawable/loading1"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
 
     <ImageView
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:id="@+id/imageView2"
-        android:src="@drawable/loading"
+        android:src="@drawable/loading2"
         android:layout_centerVertical="true"
         android:layout_toEndOf="@+id/imageView1" />
-    <ImageView
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+    <com.example.hedgehog.pokemons.AnimationImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:id="@+id/imageView3"
-        android:src="@drawable/loading"
+        android:background="@drawable/loading5"
         android:layout_centerVertical="true"
         android:layout_toEndOf="@+id/imageView2" />
     <ImageView
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:id="@+id/imageView4"
-        android:src="@drawable/loading"
+        android:src="@drawable/loading4"
         android:layout_centerVertical="true"
         android:layout_toStartOf="@+id/imageView1" />
     <ImageView
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:id="@+id/imageView5"
-        android:src="@drawable/loading"
+        android:src="@drawable/loading3"
         android:layout_centerVertical="true"
         android:layout_toStartOf="@+id/imageView4" />
+
 
 
 </RelativeLayout>
