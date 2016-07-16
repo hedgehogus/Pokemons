@@ -58,11 +58,13 @@ public class LoadingView extends RelativeLayout {
     }
 
     public void startAnimation1() {
-        imageView5.startAnimation(loadingAnimation1);
-        imageView4.startAnimation(loadingAnimation2);
-        imageView1.startAnimation(loadingAnimation3);
-        imageView2.startAnimation(loadingAnimation4);
-        imageView3.startAnimation(loadingAnimation5);
+        if (isRunning) {
+            imageView5.startAnimation(loadingAnimation1);
+            imageView4.startAnimation(loadingAnimation2);
+            imageView1.startAnimation(loadingAnimation3);
+            imageView2.startAnimation(loadingAnimation4);
+            imageView3.startAnimation(loadingAnimation5);
+        }
     }
 
 

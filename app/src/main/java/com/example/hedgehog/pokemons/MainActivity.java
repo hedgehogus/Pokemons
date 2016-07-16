@@ -26,15 +26,16 @@ import java.net.URL;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    FrameLayout flListContainer, flItemContainer;
-    boolean isPort;
+    static FrameLayout flListContainer, flItemContainer;
+    static boolean isPort;
     static MyListFragment listFragment;
     FragmentManager fragmentManager;
     static final int LIMIT = 18;
     static int offset = 0;
     static LoadingView loadingView;
-    AsyncTask<Integer,Void,Integer> at;
+    static AsyncTask<Integer,Void,Integer> at;
     static ArrayList<Pokemon> arrayList= new ArrayList<>();
+    static boolean isLoadingNow = false;
 
 
 
@@ -56,13 +57,15 @@ public class MainActivity extends AppCompatActivity {
 
         listFragment = new MyListFragment();
         fragmentManager = getFragmentManager();
-        loadingView.startAnimation1();
+
 
 
         at = new MyAsyncTask();
 
-        if (isNetworkExist(this)){
+        if (isNetworkExist(this) && !isLoadingNow){
            at.execute(LIMIT, offset);
+           loadingView.startAnimation1();
+
         }
 
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -73,16 +76,21 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
+
     static public class MyAsyncTask extends AsyncTask<Integer,Void,Integer> {
 
         @Override
         protected Integer doInBackground(Integer... params) {
             int limit = params [0];
-            int offset = params [1];
+            int tempOffset = params [1];
+            offset = offset + LIMIT;
+            isLoadingNow = true;
+            Log.d("asdf", "" + limit + " " + tempOffset);
 
             String responce = null;
             InputStream is = null;
-            String myurl = API.getPockemonList(limit,offset);
+            String myurl = API.getPockemonList(limit,tempOffset);
 
             try {
                 URL url = new URL(myurl);
@@ -202,6 +210,11 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(Integer integer) {
            // super.onPostExecute(integer);
             listFragment.setNewArrayList(arrayList);
+            isLoadingNow = false;
+            loadingView.stopAnimation();
+            loadingView.setVisibility(View.GONE);
+            flListContainer.setVisibility(View.VISIBLE);
+
 
         }
     }

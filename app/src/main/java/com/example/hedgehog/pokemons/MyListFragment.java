@@ -5,7 +5,6 @@ import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +14,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 
 /**
@@ -26,7 +23,8 @@ public class MyListFragment extends Fragment {
 
     GridView gridView;
     Activity activity;
-    static final int NUM_COLUMNS = 3;
+    static final int NUM_PORT_COLUMNS = 2;
+    static final int NUM_LAND_COLUMNS = 3;
     ArrayList<Pokemon> pokemons;
     MyArrayAdapter adapter;
 
@@ -37,6 +35,7 @@ public class MyListFragment extends Fragment {
     }
 
     public void setNewArrayList (ArrayList<Pokemon> arrayList){
+        pokemons.clear();
         for (Pokemon p:arrayList){
             pokemons.add(p);
         }
@@ -54,12 +53,17 @@ public class MyListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_list, null);
         gridView = (GridView) rootView.findViewById(R.id.gridView);
-        gridView.setNumColumns(NUM_COLUMNS);
+        if (MainActivity.isPort){
+            gridView.setNumColumns(NUM_PORT_COLUMNS);
+        } else {
+            gridView.setNumColumns(NUM_LAND_COLUMNS);
+        }
+
         pokemons = new ArrayList<>();
 
 
 
-        adapter = new MyArrayAdapter(activity, R.id.gridView, pokemons );
+        adapter = new MyArrayAdapter(activity, R.id.gridView, pokemons);
         gridView.setAdapter(adapter);
 
         return rootView;
@@ -98,9 +102,24 @@ public class MyListFragment extends Fragment {
                }
 
             tvType.setText(sb.toString());
+            if (position == arrayList.size()-1){
+                loadMore();
+            }
 
             return rootView;
         }
+    }
+
+    private void loadMore(){
+        if(!MainActivity.isLoadingNow) {
+            MainActivity.at = new MainActivity.MyAsyncTask();
+            MainActivity.at.execute(MainActivity.LIMIT, MainActivity.offset);
+            MainActivity.loadingView.setVisibility(View.VISIBLE);
+            MainActivity.loadingView.isRunning = true;
+            MainActivity.loadingView.startAnimation1();
+
+        }
+
     }
 
 
