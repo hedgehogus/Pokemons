@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
+import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -38,9 +39,8 @@ public class MainActivity extends AppCompatActivity {
     static AsyncTask<Integer,Void,Integer> at;
     static ArrayList<Pokemon> arrayList= new ArrayList<>();
     static boolean isLoadingNow = false;
+    static boolean isDataExists = false;
     Button bLoad;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,24 +51,27 @@ public class MainActivity extends AppCompatActivity {
         loadingView = (LoadingView) findViewById(R.id.animView);
         bLoad = (Button) findViewById(R.id.bLoad);
         flListContainer.setVisibility(View.GONE);
+        listFragment = new MyListFragment();
+        fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(R.id.flListContainer, listFragment, "listFragment");
+        fragmentTransaction.commit();
+
         bLoad.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                listFragment = new MyListFragment();
-                fragmentManager = getFragmentManager();
+
                 at = new MyAsyncTask();
 
                 if (isNetworkExist(getApplicationContext()) && !isLoadingNow) {
                     at.execute(LIMIT, offset);
                     loadingView.startAnimation1();
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.add(R.id.flListContainer, listFragment, "listFragment");
-                    fragmentTransaction.commit();
                     bLoad.setVisibility(View.GONE);
+                    isDataExists = true;
 
                 } else {
-                    Toast.makeText(getApplicationContext(), "No access to a network! Try again", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "No access to a network! Try later", Toast.LENGTH_LONG).show();
                 }
 
 
@@ -79,12 +82,38 @@ public class MainActivity extends AppCompatActivity {
             isPort = true;
         } else isPort = false;
 
+    }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (isDataExists) {
+            outState.putInt("key", 1);
+        }
 
     }
 
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
 
+        if (savedInstanceState.getInt("key", 0) == 1){
+            bLoad.setVisibility(View.GONE);
+            if (arrayList.size() > 1) {
+                flListContainer.setVisibility(View.VISIBLE);
+            }
+            if (!isLoadingNow) {
+                loadingView.setVisibility(View.GONE);
+                
+            } else {
+                loadingView.setVisibility(View.VISIBLE);
+                loadingView.isRunning = true;
+                loadingView.startAnimation1();
+            }
+            listFragment.setNewArrayList(arrayList);
+        }
 
+    }
 
     static public class MyAsyncTask extends AsyncTask<Integer,Void,Integer> {
 

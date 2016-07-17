@@ -25,7 +25,7 @@ public class MyListFragment extends Fragment {
     Activity activity;
     static final int NUM_COLUMNS = 2;
 
-    ArrayList<Pokemon> pokemons;
+    ArrayList<Pokemon> pokemons = new ArrayList<>();
     MyArrayAdapter adapter;
 
     @Override
@@ -35,7 +35,9 @@ public class MyListFragment extends Fragment {
     }
 
     public void setNewArrayList (ArrayList<Pokemon> arrayList){
-        pokemons.clear();
+
+            pokemons.clear();
+
         for (Pokemon p:arrayList){
             pokemons.add(p);
         }
@@ -43,10 +45,6 @@ public class MyListFragment extends Fragment {
 
     }
 
-    public void notifyList (){
-        adapter.notifyDataSetChanged();
-
-    }
 
     @Nullable
     @Override
@@ -54,14 +52,10 @@ public class MyListFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_list, null);
         gridView = (GridView) rootView.findViewById(R.id.gridView);
         gridView.setNumColumns(NUM_COLUMNS);
-
-
-        pokemons = new ArrayList<>();
-
-
-
         adapter = new MyArrayAdapter(activity, R.id.gridView, pokemons);
         gridView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+        //gridView.setTranscriptMode(GridView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
 
         return rootView;
     }
