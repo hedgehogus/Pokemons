@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
             }
             if (!isLoadingNow) {
                 loadingView.setVisibility(View.GONE);
-                
+
             } else {
                 loadingView.setVisibility(View.VISIBLE);
                 loadingView.isRunning = true;
@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
             int resp = 1;
             offset = arrayList.size()+limit;
             isLoadingNow = true;
-            Log.d("asdf", "" + limit + " " + tempOffset);
+            //Log.d("asdf", "" + limit + " " + tempOffset);
 
             String responce = null;
             InputStream is = null;
