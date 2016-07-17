@@ -5,16 +5,17 @@
     android:orientation="vertical">
 
     <ImageView
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
         android:id="@+id/ivItem"
+        android:src="@drawable/default_picture"
         android:layout_gravity="center_horizontal" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:padding="6dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Name #00"
         android:id="@+id/tvNameItem"
         android:layout_gravity="center_horizontal" />
@@ -33,9 +34,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="Type"
-                android:paddingLeft="@dimen/port_padding"
+                android:paddingLeft="@dimen/land_padding"
                 android:layout_gravity="left"
                 />
         </FrameLayout>
@@ -48,7 +49,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="0"
                 android:paddingLeft="20dp"
                 android:gravity="left"
@@ -68,9 +69,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="Attack"
-                android:paddingLeft="@dimen/port_padding"
+                android:paddingLeft="@dimen/land_padding"
                 android:layout_gravity="left"
                 />
         </FrameLayout>
@@ -81,7 +82,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="0"
                 android:gravity="left"
                 android:paddingLeft="20dp"
@@ -101,9 +102,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="Defence"
-                android:paddingLeft="@dimen/port_padding"
+                android:paddingLeft="@dimen/land_padding"
                 android:layout_gravity="left"
                 />
         </FrameLayout>
@@ -114,7 +115,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="0"
                 android:gravity="left"
                 android:paddingLeft="20dp"
@@ -134,9 +135,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="HP"
-                android:paddingLeft="@dimen/port_padding"
+                android:paddingLeft="@dimen/land_padding"
                 android:layout_gravity="left"
                 />
         </FrameLayout>
@@ -147,7 +148,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="0"
                 android:gravity="left"
                 android:paddingLeft="20dp"
@@ -167,9 +168,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="SP Attack"
-                android:paddingLeft="@dimen/port_padding"
+                android:paddingLeft="@dimen/land_padding"
                 android:layout_gravity="left"
                 />
         </FrameLayout>
@@ -180,7 +181,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="0"
                 android:gravity="left"
                 android:paddingLeft="20dp"
@@ -201,9 +202,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="SP Defence"
-                android:paddingLeft="@dimen/port_padding"
+                android:paddingLeft="@dimen/land_padding"
                 android:layout_gravity="left"
                 />
         </FrameLayout>
@@ -214,7 +215,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="0"
                 android:gravity="left"
                 android:paddingLeft="20dp"
@@ -234,9 +235,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="Speed"
-                android:paddingLeft="@dimen/port_padding"
+                android:paddingLeft="@dimen/land_padding"
                 android:layout_gravity="left"
                 />
         </FrameLayout>
@@ -247,7 +248,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="0"
                 android:gravity="left"
                 android:paddingLeft="20dp"
@@ -267,9 +268,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="Weight"
-                android:paddingLeft="@dimen/port_padding"
+                android:paddingLeft="@dimen/land_padding"
                 android:layout_gravity="left"
                 />
         </FrameLayout>
@@ -280,7 +281,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="0"
                 android:gravity="left"
                 android:paddingLeft="20dp"
@@ -300,9 +301,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="Total moves"
-                android:paddingLeft="@dimen/port_padding"
+                android:paddingLeft="@dimen/land_padding"
                 android:layout_gravity="left"
                 />
         </FrameLayout>
@@ -313,7 +314,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="0"
                 android:gravity="left"
                 android:paddingLeft="20dp"

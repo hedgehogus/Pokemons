@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     static FrameLayout flListContainer, flItemContainer;
     static boolean isPort;
     static MyListFragment listFragment;
+    static PokemonDetailFragment detail;
     FragmentManager fragmentManager;
     static final int LIMIT = 18;
     static int offset = 0;
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
         bLoad = (Button) findViewById(R.id.bLoad);
         flListContainer.setVisibility(View.GONE);
         listFragment = new MyListFragment();
+        detail = new PokemonDetailFragment();
         fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.flListContainer, listFragment, "listFragment");
@@ -60,27 +62,26 @@ public class MainActivity extends AppCompatActivity {
         bLoad.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
                 at = new MyAsyncTask();
-
                 if (isNetworkExist(getApplicationContext()) && !isLoadingNow) {
                     at.execute(LIMIT, offset);
                     loadingView.startAnimation1();
                     bLoad.setVisibility(View.GONE);
                     isDataExists = true;
-
                 } else {
                     Toast.makeText(getApplicationContext(), "No access to a network! Try later", Toast.LENGTH_LONG).show();
                 }
-
-
             }
         });
-
         if (flItemContainer == null){
             isPort = true;
         } else isPort = false;
+        if (!isPort){
+            FragmentTransaction fragmentTransaction2 = fragmentManager.beginTransaction();
+            fragmentTransaction2.add(R.id.flItemContainer, detail, "detail");
+            fragmentTransaction2.commit();
+        }
+
 
     }
 
