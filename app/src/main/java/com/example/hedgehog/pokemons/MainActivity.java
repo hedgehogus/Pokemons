@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
-import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,11 +14,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.Toast;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     static ArrayList<Pokemon> arrayList= new ArrayList<>();
     static boolean isLoadingNow = false;
     static boolean isDataExists = false;
+    static int currentPosition = 0;
     Button bLoad;
 
     @Override
@@ -76,13 +74,37 @@ public class MainActivity extends AppCompatActivity {
         if (flItemContainer == null){
             isPort = true;
         } else isPort = false;
+        FragmentTransaction fragmentTransaction2 = fragmentManager.beginTransaction();
         if (!isPort){
-            FragmentTransaction fragmentTransaction2 = fragmentManager.beginTransaction();
             fragmentTransaction2.add(R.id.flItemContainer, detail, "detail");
+            fragmentTransaction2.commit();
+        } else {
+            fragmentTransaction2.add(R.id.flListContainer, detail, "detail");
             fragmentTransaction2.commit();
         }
 
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        Log.d("asdf", " " +detail.isVisible());
+        if (isPort && detail.isVisible1){
+            detail.setVisibility(false);
+            fragmentManager.beginTransaction().hide(detail).commit();
+            fragmentManager.beginTransaction().show(listFragment);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (isPort){
+            detail.setVisibility(false);
+            fragmentManager.beginTransaction().hide(detail).commit();
+        }
     }
 
     @Override
@@ -112,6 +134,10 @@ public class MainActivity extends AppCompatActivity {
                 loadingView.startAnimation1();
             }
             listFragment.setNewArrayList(arrayList);
+            detail.setValues(arrayList.get(currentPosition));
+            if (isPort && detail.isVisible()){
+                fragmentManager.beginTransaction().show(detail).commit();
+            }
         }
 
     }

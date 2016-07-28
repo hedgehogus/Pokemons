@@ -3,6 +3,7 @@ package com.example.hedgehog.pokemons;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,8 @@ import android.widget.TextView;
  * Created by hedgehog on 17.07.2016.
  */
 public class PokemonDetailFragment extends Fragment {
+    boolean isVisible1 = true;
+    View rootView;
     ImageView ivItem;
     TextView tvNameItem;
     TextView tvTypeValue;
@@ -28,7 +31,7 @@ public class PokemonDetailFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.pokemon_detail_layout, null);
+        rootView = inflater.inflate(R.layout.pokemon_detail_layout, null);
         ivItem = (ImageView) rootView.findViewById(R.id.ivItem);
         tvNameItem = (TextView) rootView.findViewById(R.id.tvNameItem);
         tvTypeValue = (TextView) rootView.findViewById(R.id.tvTypeValue);
@@ -56,13 +59,24 @@ public class PokemonDetailFragment extends Fragment {
         }
         tvTypeValue.setText(sb.toString());
 
-        tvAttackValue.setText(pokemon.attack);
-        tvDefenceValue.setText(pokemon.defence);
-        tvHPValue.setText(pokemon.hp);
-        tvSPAttackValue.setText(pokemon.spAttack);
-        tvSPDefenceValue.setText(pokemon.spDefence);
-        tvSpeedValue.setText(pokemon.speed);
-        tvWeightValue.setText(pokemon.weight);
-        tvTotalMovesValue.setText(pokemon.totalMoves);
+        tvAttackValue.setText(Integer.toString(pokemon.attack));
+        tvDefenceValue.setText(Integer.toString(pokemon.defence));
+        tvHPValue.setText(Integer.toString(pokemon.hp));
+        tvSPAttackValue.setText(Integer.toString(pokemon.spAttack));
+        tvSPDefenceValue.setText(Integer.toString(pokemon.spDefence));
+        tvSpeedValue.setText(Integer.toString(pokemon.speed));
+        tvWeightValue.setText(Integer.toString(pokemon.weight));
+        tvTotalMovesValue.setText(Integer.toString(pokemon.totalMoves));
+    }
+
+    public void setVisibility(boolean b){
+
+        if (b){
+            rootView.setVisibility(View.VISIBLE);
+            isVisible1 = true;
+        } else {
+            rootView.setVisibility(View.INVISIBLE);
+            isVisible1 = false;
+        }
     }
 }
