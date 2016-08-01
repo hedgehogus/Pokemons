@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
     static FrameLayout flListContainer, flItemContainer;
     static boolean isPort;
     static MyListFragment listFragment;
-    static PokemonDetailFragment detail;
+    PokemonDetailFragment detail;
     FragmentManager fragmentManager;
     static final int LIMIT = 18;
     static int offset = 0;
@@ -53,9 +53,7 @@ public class MainActivity extends AppCompatActivity {
         listFragment = new MyListFragment();
         detail = new PokemonDetailFragment();
         fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.flListContainer, listFragment, "listFragment");
-        fragmentTransaction.commit();
+        fragmentManager.beginTransaction().add(R.id.flListContainer,listFragment, "listFragment").commit();
 
         bLoad.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,13 +72,12 @@ public class MainActivity extends AppCompatActivity {
         if (flItemContainer == null){
             isPort = true;
         } else isPort = false;
-        FragmentTransaction fragmentTransaction2 = fragmentManager.beginTransaction();
+
         if (!isPort){
-            fragmentTransaction2.add(R.id.flItemContainer, detail, "detail");
-            fragmentTransaction2.commit();
+            fragmentManager.beginTransaction().add(R.id.flItemContainer,detail,"detail").commit();
+
         } else {
-            fragmentTransaction2.add(R.id.flListContainer, detail, "detail");
-            fragmentTransaction2.commit();
+            fragmentManager.beginTransaction().add(R.id.flListContainer,detail,"detail").commit();
         }
 
 
@@ -88,11 +85,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Log.d("asdf", " " +detail.isVisible());
+       // Log.d("asdf", " " + detail.isVisible());
         if (isPort && detail.isVisible1){
             detail.setVisibility(false);
             fragmentManager.beginTransaction().hide(detail).commit();
-            fragmentManager.beginTransaction().show(listFragment);
+            fragmentManager.beginTransaction().show(listFragment).commit();
+
         } else {
             super.onBackPressed();
         }
@@ -104,11 +102,16 @@ public class MainActivity extends AppCompatActivity {
         if (isPort){
             detail.setVisibility(false);
             fragmentManager.beginTransaction().hide(detail).commit();
+            fragmentManager.beginTransaction().show(listFragment).commit();
         }
+        listFragment.setNewArrayList(arrayList);
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
+        Log.d ("asdf", "onSave");
+        fragmentManager.beginTransaction().remove(detail).commit();
+        fragmentManager.beginTransaction().remove(listFragment).commit();
         super.onSaveInstanceState(outState);
         if (isDataExists) {
             outState.putInt("key", 1);
@@ -116,28 +119,37 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+
+
+
+     @Override
+   protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
+         if (fragmentManager.findFragmentByTag("listFragment") == null) {
+             fragmentManager.beginTransaction().add(R.id.flListContainer, listFragment, "listFragment").commit();
+         }
+         listFragment.setNewArrayList(arrayList);
 
         if (savedInstanceState.getInt("key", 0) == 1){
-            bLoad.setVisibility(View.GONE);
+           bLoad.setVisibility(View.GONE);
             if (arrayList.size() > 1) {
-                flListContainer.setVisibility(View.VISIBLE);
+              flListContainer.setVisibility(View.VISIBLE);
             }
             if (!isLoadingNow) {
                 loadingView.setVisibility(View.GONE);
-
             } else {
-                loadingView.setVisibility(View.VISIBLE);
-                loadingView.isRunning = true;
-                loadingView.startAnimation1();
+                  loadingView.setVisibility(View.VISIBLE);
+                  loadingView.isRunning = true;
+                  loadingView.startAnimation1();
             }
-            listFragment.setNewArrayList(arrayList);
+
             detail.setValues(arrayList.get(currentPosition));
-            if (isPort && detail.isVisible()){
-                fragmentManager.beginTransaction().show(detail).commit();
+            fragmentManager.beginTransaction().show(listFragment).commit();
+            if (isPort ){
+                 detail.setVisibility(false);
+                 fragmentManager.beginTransaction().hide(detail).commit();
             }
+
         }
 
     }

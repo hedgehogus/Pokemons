@@ -6,6 +6,7 @@ import android.app.FragmentManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,8 @@ public class MyListFragment extends Fragment implements AdapterView.OnItemClickL
 
     ArrayList<Pokemon> pokemons = new ArrayList<>();
     MyArrayAdapter adapter;
+
+
 
     @Override
     public void onAttach(Activity activity) {
@@ -72,8 +75,8 @@ public class MyListFragment extends Fragment implements AdapterView.OnItemClickL
         MainActivity.currentPosition = position;
         if (MainActivity.isPort){
             detailFragment.setVisibility(true);
-            fragmentManager.beginTransaction().show(detailFragment);
-            fragmentManager.beginTransaction().hide(listFragment);
+            fragmentManager.beginTransaction().show(detailFragment).commit();
+            fragmentManager.beginTransaction().hide(listFragment).commit();
         }
 
     }

@@ -38,7 +38,7 @@
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Type"
                 android:paddingLeft="@dimen/port_padding"
-                android:layout_gravity="left"
+                android:layout_gravity="center"
                  />
         </FrameLayout>
 

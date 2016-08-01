@@ -28,6 +28,11 @@ public class PokemonDetailFragment extends Fragment {
     TextView tvWeightValue;
     TextView tvTotalMovesValue;
 
+    public PokemonDetailFragment(){
+        super();
+        Log.d("asdf", "consturcorDet");
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -43,6 +48,7 @@ public class PokemonDetailFragment extends Fragment {
         tvSpeedValue = (TextView) rootView.findViewById(R.id.tvSpeedValue);
         tvWeightValue = (TextView) rootView.findViewById(R.id.tvWeightValue);
         tvTotalMovesValue = (TextView) rootView.findViewById(R.id.tvTotalMovesValue);
+
         return rootView;
     }
 
