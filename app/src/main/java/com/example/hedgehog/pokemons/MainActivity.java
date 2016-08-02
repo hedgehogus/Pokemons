@@ -1,5 +1,7 @@
 package com.example.hedgehog.pokemons;
 
+import android.app.Activity;
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
@@ -39,12 +41,14 @@ public class MainActivity extends AppCompatActivity {
     static boolean isLoadingNow = false;
     static boolean isDataExists = false;
     static int currentPosition = 0;
-    Button bLoad;
+    static Button bLoad;
+    static Activity thisActivity = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        thisActivity = this;
         flListContainer = (FrameLayout) findViewById(R.id.flListContainer);
         flItemContainer = (FrameLayout) findViewById(R.id.flItemContainer);
         loadingView = (LoadingView) findViewById(R.id.animView);
@@ -62,6 +66,8 @@ public class MainActivity extends AppCompatActivity {
                 if (isNetworkExist(getApplicationContext()) && !isLoadingNow) {
                     at.execute(LIMIT, offset);
                     loadingView.startAnimation1();
+                    loadingView.setVisibility(View.VISIBLE);
+                    loadingView.isRunning = true;
                     bLoad.setVisibility(View.GONE);
                     isDataExists = true;
                 } else {
@@ -104,6 +110,11 @@ public class MainActivity extends AppCompatActivity {
             fragmentManager.beginTransaction().hide(detail).commit();
             fragmentManager.beginTransaction().show(listFragment).commit();
         }
+
+        Fragment f = fragmentManager.findFragmentByTag("listFragment");
+        if (f == null){
+            fragmentManager.beginTransaction().add(R.id.flListContainer,listFragment, "listFragment").commit();
+        }
         listFragment.setNewArrayList(arrayList);
     }
 
@@ -119,11 +130,8 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
-
-
-     @Override
-   protected void onRestoreInstanceState(Bundle savedInstanceState) {
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
          if (fragmentManager.findFragmentByTag("listFragment") == null) {
              fragmentManager.beginTransaction().add(R.id.flListContainer, listFragment, "listFragment").commit();
@@ -172,8 +180,8 @@ public class MainActivity extends AppCompatActivity {
             try {
                 URL url = new URL(myurl);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setReadTimeout(100000 /* milliseconds */);
-                conn.setConnectTimeout(150000 /* milliseconds */);
+                conn.setReadTimeout(60000 /* milliseconds */);
+                conn.setConnectTimeout(60000 /* milliseconds */);
                 conn.setRequestMethod("GET");
                 conn.setDoInput(true);
                 conn.connect();
@@ -266,7 +274,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
             } catch (Exception e) {
-                Log.d("asdf", e.getMessage());
+                Log.d("asdf", "" + e.getMessage());
             }
             finally {
                 if (is != null) {
@@ -286,15 +294,24 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Integer integer) {
            // super.onPostExecute(integer);
-            listFragment.setNewArrayList(arrayList);
+            if (arrayList.size() > 0) {
+                listFragment.setNewArrayList(arrayList);
+                flListContainer.setVisibility(View.VISIBLE);
+            }
             isLoadingNow = false;
             loadingView.stopAnimation();
             loadingView.setVisibility(View.GONE);
-            flListContainer.setVisibility(View.VISIBLE);
-
-
+            //Log.d ("asdf", "" + arrayList.size());
+            if (arrayList.size() == 0){
+                isDataExists = false;
+                offset = 0;
+                bLoad.setVisibility(View.VISIBLE);
+                Toast.makeText(thisActivity, "Try later", Toast.LENGTH_SHORT ).show();
+            }
         }
     }
+
+
 
     public static boolean isNetworkExist (Context context){
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
