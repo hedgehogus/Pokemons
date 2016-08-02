@@ -4,5 +4,6 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="port_padding">60dp</dimen>
     <dimen name="land_padding">40dp</dimen>
+    <dimen name="cell_height">150dp</dimen>
 
 </resources>
