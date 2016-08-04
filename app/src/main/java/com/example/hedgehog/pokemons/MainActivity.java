@@ -11,6 +11,7 @@ import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.transition.Fade;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -89,6 +90,8 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    
+
     @Override
     public void onBackPressed() {
        // Log.d("asdf", " " + detail.isVisible());
@@ -113,7 +116,16 @@ public class MainActivity extends AppCompatActivity {
 
         Fragment f = fragmentManager.findFragmentByTag("listFragment");
         if (f == null){
-            fragmentManager.beginTransaction().add(R.id.flListContainer,listFragment, "listFragment").commit();
+            fragmentManager.beginTransaction().add(R.id.flListContainer, listFragment, "listFragment").commit();
+        }
+        f = fragmentManager.findFragmentByTag("detail");
+        if (f == null){
+            if (!isPort){
+                fragmentManager.beginTransaction().add(R.id.flItemContainer,detail,"detail").commit();
+
+            } else {
+                fragmentManager.beginTransaction().add(R.id.flListContainer,detail,"detail").commit();
+            }
         }
         listFragment.setNewArrayList(arrayList);
     }
