@@ -5,17 +5,22 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.transition.Fade;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ListView;
 import android.widget.Toast;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,12 +49,35 @@ public class MainActivity extends AppCompatActivity {
     static int currentPosition = 0;
     static Button bLoad;
     static Activity thisActivity = null;
+    DrawerLayout mDrawerLayout;
+    ListView mDrawerList;
+    ActionBarDrawerToggle mDrawerToggle;;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         thisActivity = this;
+
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,  R.string.app_name, R.string.app_name){
+
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+                getSupportActionBar().setTitle(R.string.app_name);
+            }
+
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                getSupportActionBar().setTitle(R.string.app_name);
+            }
+        };
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+
+
         flListContainer = (FrameLayout) findViewById(R.id.flListContainer);
         flItemContainer = (FrameLayout) findViewById(R.id.flItemContainer);
         loadingView = (LoadingView) findViewById(R.id.animView);
@@ -90,6 +118,24 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
     
 
     @Override
