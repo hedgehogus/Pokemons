@@ -18,6 +18,8 @@ import android.transition.Fade;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ListView;
@@ -32,26 +34,35 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashSet;
 
-public class MainActivity extends AppCompatActivity {
-    static FrameLayout flListContainer, flItemContainer;
-    static boolean isPort;
-    static MyListFragment listFragment;
-    PokemonDetailFragment detail;
-    FragmentManager fragmentManager;
-    static final int LIMIT = 18;
-    static int offset = 0;
-    static LoadingView loadingView;
-    static AsyncTask<Integer,Void,Integer> at;
-    static ArrayList<Pokemon> arrayList= new ArrayList<>();
-    static boolean isLoadingNow = false;
-    static boolean isDataExists = false;
-    static int currentPosition = 0;
-    static Button bLoad;
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+    public static final String NO_TYPES = "no types";
     static Activity thisActivity = null;
     DrawerLayout mDrawerLayout;
-    ListView mDrawerList;
-    ActionBarDrawerToggle mDrawerToggle;;
+    ActionBarDrawerToggle mDrawerToggle;
+
+    FragmentManager fragmentManager;
+    PokemonDetailFragment detail;
+    static MyListFragment listFragment;
+
+    static FrameLayout flListContainer, flItemContainer;
+    static LoadingView loadingView;
+    static Button bLoad;
+    static ListView mDrawerList;
+
+    static AsyncTask<Integer,Void,Integer> at;
+    static final int LIMIT = 18;
+    static int offset = 0;
+
+    static boolean isLoadingNow = false;
+    static boolean isDataExists = false;
+    static boolean isPort;
+
+    static ArrayList<Pokemon> arrayList = new ArrayList<>();
+    static ArrayList<Type> typesArray = new ArrayList<>();
+    static ArrayAdapter<Type> adapter;
+    static int currentPosition = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,12 +73,10 @@ public class MainActivity extends AppCompatActivity {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,  R.string.app_name, R.string.app_name){
-
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
                 getSupportActionBar().setTitle(R.string.app_name);
             }
-
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
                 getSupportActionBar().setTitle(R.string.app_name);
@@ -77,6 +86,12 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
+        adapter = new MenuAdapter(this,R.layout.menu_item_layout, typesArray);
+        if (typesArray.size() == 0) {
+            typesArray.add(new Type(NO_TYPES));
+        }
+        mDrawerList.setAdapter(adapter);
+        mDrawerList.setOnItemClickListener(this);
 
         flListContainer = (FrameLayout) findViewById(R.id.flListContainer);
         flItemContainer = (FrameLayout) findViewById(R.id.flItemContainer);
@@ -114,8 +129,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             fragmentManager.beginTransaction().add(R.id.flListContainer,detail,"detail").commit();
         }
-
-
     }
 
     @Override
@@ -137,7 +150,6 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
     
-
     @Override
     public void onBackPressed() {
        // Log.d("asdf", " " + detail.isVisible());
@@ -178,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        Log.d ("asdf", "onSave");
+        Log.d("asdf", "onSave");
         fragmentManager.beginTransaction().remove(detail).commit();
         fragmentManager.beginTransaction().remove(listFragment).commit();
         super.onSaveInstanceState(outState);
@@ -220,6 +232,26 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Type currentType = typesArray.get(position);
+        if (currentType.nameOfType == NO_TYPES){
+            for (Type t: typesArray){
+                t.isChosenNow = false;
+            }
+            currentType.isChosenNow = true;
+        } else {
+            typesArray.get(0).isChosenNow = false;
+            if (currentType.isChosenNow) {
+                currentType.isChosenNow = false;
+            } else {
+                currentType.isChosenNow = true;
+            }
+        }
+        adapter.notifyDataSetChanged();
+
+    }
+
     static public class MyAsyncTask extends AsyncTask<Integer,Void,Integer> {
 
         @Override
@@ -229,8 +261,6 @@ public class MainActivity extends AppCompatActivity {
             int resp = 1;
             offset = arrayList.size()+limit;
             isLoadingNow = true;
-            //Log.d("asdf", "" + limit + " " + tempOffset);
-
             String responce = null;
             InputStream is = null;
             String myurl = API.getPockemonList(limit,tempOffset);
@@ -343,15 +373,11 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             }
-
-
-
             return resp;
         }
 
         @Override
         protected void onPostExecute(Integer integer) {
-           // super.onPostExecute(integer);
             if (arrayList.size() > 0) {
                 listFragment.setNewArrayList(arrayList);
                 flListContainer.setVisibility(View.VISIBLE);
@@ -359,7 +385,9 @@ public class MainActivity extends AppCompatActivity {
             isLoadingNow = false;
             loadingView.stopAnimation();
             loadingView.setVisibility(View.GONE);
-            //Log.d ("asdf", "" + arrayList.size());
+
+            defineTypes();
+
             if (arrayList.size() == 0){
                 isDataExists = false;
                 offset = 0;
@@ -369,7 +397,18 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
+    public static void defineTypes(){
+       // typesArray.remove(new Type(NO_TYPES));
+        for (Pokemon p: arrayList){
+            for (String t: p.types){
+                Type temp = new Type(t);
+                if (!typesArray.contains(temp)){
+                    typesArray.add(temp);
+                }
+            }
+        }
+        adapter.notifyDataSetChanged();
+    }
 
     public static boolean isNetworkExist (Context context){
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);

@@ -30,7 +30,6 @@ public class PokemonDetailFragment extends Fragment {
 
     public PokemonDetailFragment(){
         super();
-        Log.d("asdf", "consturcorDet");
     }
 
     @Nullable
