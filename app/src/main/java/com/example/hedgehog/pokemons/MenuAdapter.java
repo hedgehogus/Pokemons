@@ -36,7 +36,7 @@ public class MenuAdapter extends ArrayAdapter<Type> {
         textView.setText(t.nameOfType);
 
         if (t.isChosenNow){
-            rootView.setBackgroundColor(context.getResources().getColor(R.color.color3));
+            rootView.setBackground(context.getResources().getDrawable(R.drawable.item_in_menu));
         }
 
         return rootView;

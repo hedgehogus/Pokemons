@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -87,6 +88,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         getSupportActionBar().setHomeButtonEnabled(true);
 
         adapter = new MenuAdapter(this,R.layout.menu_item_layout, typesArray);
+
         if (typesArray.size() == 0) {
             typesArray.add(new Type(NO_TYPES));
         }
@@ -129,6 +131,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         } else {
             fragmentManager.beginTransaction().add(R.id.flListContainer,detail,"detail").commit();
         }
+
+
     }
 
     @Override
@@ -152,14 +156,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     
     @Override
     public void onBackPressed() {
-       // Log.d("asdf", " " + detail.isVisible());
-        if (isPort && detail.isVisible1){
-            detail.setVisibility(false);
-            fragmentManager.beginTransaction().hide(detail).commit();
-            fragmentManager.beginTransaction().show(listFragment).commit();
-
+        if (this.mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            this.mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            if (isPort && detail.isVisible1) {
+                detail.setVisibility(false);
+                fragmentManager.beginTransaction().hide(detail).commit();
+                fragmentManager.beginTransaction().show(listFragment).commit();
+
+            } else {
+                super.onBackPressed();
+                typesArray.clear();
+            }
         }
     }
 
@@ -220,8 +228,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                   loadingView.isRunning = true;
                   loadingView.startAnimation1();
             }
-
-            detail.setValues(arrayList.get(currentPosition));
+            if (arrayList.size() != 0) {
+                detail.setValues(arrayList.get(currentPosition));
+            }
             fragmentManager.beginTransaction().show(listFragment).commit();
             if (isPort ){
                  detail.setVisibility(false);
