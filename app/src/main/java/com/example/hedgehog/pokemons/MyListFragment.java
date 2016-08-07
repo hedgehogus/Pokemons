@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
@@ -22,7 +23,7 @@ import java.util.ArrayList;
 /**
  * Created by hedgehog on 12.07.2016.
  */
-public class MyListFragment extends Fragment implements AdapterView.OnItemClickListener {
+public class MyListFragment extends Fragment implements AdapterView.OnItemClickListener, AbsListView.OnScrollListener{
 
     GridView gridView;
     Activity activity;
@@ -40,11 +41,33 @@ public class MyListFragment extends Fragment implements AdapterView.OnItemClickL
     }
 
     public void setNewArrayList (ArrayList<Pokemon> arrayList){
-
-            pokemons.clear();
-
-        for (Pokemon p:arrayList){
-            pokemons.add(p);
+        ArrayList<Type> chosenTypes = new ArrayList<>();
+        for (Type type: MainActivity.typesArray){
+            if (type.isChosenNow == true){
+                chosenTypes.add(type);
+            }
+        }
+        Log.d("asdf", "chosen   " + chosenTypes.toString());
+        pokemons.clear();
+        if (chosenTypes.size() == 0) {
+            for (Pokemon p : arrayList) {
+                pokemons.add(p);
+            }
+        } else {
+            for (Pokemon p : arrayList) {
+                boolean isAcceptable = false;
+                for (Type t : p.types) {
+                    Log.d ("asdf", t.nameOfType);
+                    if (chosenTypes.contains(t)) {
+                        Log.d ("asdf", t.nameOfType);
+                        isAcceptable = true;
+                        break;
+                    }
+                }
+                if (isAcceptable) {
+                    pokemons.add(p);
+                }
+            }
         }
         adapter.notifyDataSetChanged();
 
@@ -62,7 +85,7 @@ public class MyListFragment extends Fragment implements AdapterView.OnItemClickL
         adapter.notifyDataSetChanged();
         //gridView.setTranscriptMode(GridView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
         gridView.setOnItemClickListener(this);
-
+        gridView.setOnScrollListener(this);
         return rootView;
     }
 
@@ -78,6 +101,16 @@ public class MyListFragment extends Fragment implements AdapterView.OnItemClickL
             fragmentManager.beginTransaction().show(detailFragment).commit();
             fragmentManager.beginTransaction().hide(listFragment).commit();
         }
+
+    }
+
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+    }
+
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 
     }
 
@@ -108,11 +141,11 @@ public class MyListFragment extends Fragment implements AdapterView.OnItemClickL
             ivPicture.setImageBitmap(arrayList.get(position).picture);
             String fullName = arrayList.get(position).name + " #" + arrayList.get(position).id;
             tvName.setText(fullName);
-            String [] types = arrayList.get(position).types;
+            Type [] types = arrayList.get(position).types;
             StringBuilder sb = new StringBuilder("");
 
             for (int i = 0; i < types.length; i++){
-              sb.append(types[i]);
+              sb.append(types[i].nameOfType);
                 if (i !=types.length-1){
                     sb.append(", ");
                 }

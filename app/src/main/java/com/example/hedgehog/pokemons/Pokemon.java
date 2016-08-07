@@ -9,7 +9,7 @@ public class Pokemon {
 
     final int id;
     final String name;
-    final String [] types;
+    final Type [] types;
     final int attack;
     final int defence;
     final int hp;
@@ -20,7 +20,7 @@ public class Pokemon {
     final int totalMoves;
     Bitmap picture;
 
-    private Pokemon(int id, String name, String[] types, int attack, int defence, int hp, int spAttack, int spDefence, int speed, int weight, int totalMoves){
+    private Pokemon(int id, String name, Type[] types, int attack, int defence, int hp, int spAttack, int spDefence, int speed, int weight, int totalMoves){
         this.id = id;
         this.name = name;
         this.types = types;
@@ -42,7 +42,7 @@ public class Pokemon {
     public static class PokeBuilder {
         int builderId;
         String builderName;
-        String [] builderTypes;
+        Type [] builderTypes;
         int attack = 0;
         int defence = 0;
         int hp = 0;
@@ -54,9 +54,13 @@ public class Pokemon {
 
 
 
-        public PokeBuilder(int id, String name, String[] types){
+        public PokeBuilder(int id, String name, String[] typesStr){
             this.builderId = id;
             this.builderName = name;
+            Type [] types = new Type[typesStr.length];
+            for (int i = 0; i < typesStr.length; i++){
+                types[i] = new Type(typesStr[i]);
+            }
             this.builderTypes = types;
         }
 

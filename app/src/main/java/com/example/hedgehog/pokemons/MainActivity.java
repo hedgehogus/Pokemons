@@ -198,7 +198,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        Log.d("asdf", "onSave");
+
         fragmentManager.beginTransaction().remove(detail).commit();
         fragmentManager.beginTransaction().remove(listFragment).commit();
         super.onSaveInstanceState(outState);
@@ -248,7 +248,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             for (Type t: typesArray){
                 t.isChosenNow = false;
             }
-            currentType.isChosenNow = true;
+            currentType.isChosenNow = false;
         } else {
             typesArray.get(0).isChosenNow = false;
             if (currentType.isChosenNow) {
@@ -258,6 +258,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         }
         adapter.notifyDataSetChanged();
+        listFragment.setNewArrayList(arrayList);
 
     }
 
@@ -407,10 +408,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public static void defineTypes(){
-       // typesArray.remove(new Type(NO_TYPES));
         for (Pokemon p: arrayList){
-            for (String t: p.types){
-                Type temp = new Type(t);
+            for (Type t: p.types){
+                Type temp = t;
                 if (!typesArray.contains(temp)){
                     typesArray.add(temp);
                 }
