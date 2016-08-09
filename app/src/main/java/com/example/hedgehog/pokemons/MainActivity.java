@@ -167,6 +167,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             } else {
                 super.onBackPressed();
                 typesArray.clear();
+                arrayList.clear();
             }
         }
     }

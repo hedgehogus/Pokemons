@@ -34,7 +34,8 @@ public class MyListFragment extends Fragment implements AdapterView.OnItemClickL
 
 
     private int preLast;
-    int counter = 0;
+    int totalItemCount = 0;
+    int scrollState;
 
 
     @Override
@@ -52,6 +53,7 @@ public class MyListFragment extends Fragment implements AdapterView.OnItemClickL
         }
         //Log.d("asdf", "chosen   " + chosenTypes.toString());
         pokemons.clear();
+        preLast = 0;
         if (chosenTypes.size() == 0) {
             for (Pokemon p : arrayList) {
                 pokemons.add(p);
@@ -107,20 +109,28 @@ public class MyListFragment extends Fragment implements AdapterView.OnItemClickL
 
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
+        this.scrollState = scrollState;
 
     }
 
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+        if (scrollState != AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
+            if (gridView.getChildCount() != 0) {
+                if (gridView.getLastVisiblePosition() == gridView.getAdapter().getCount() - 1 &&
+                        gridView.getChildAt(gridView.getChildCount() - 1).getBottom() <= gridView.getHeight()) {
+                   loadMore();
+                }
+            }
+       } else {
+          // Log.d("asdf", "totalItemCount " + totalItemCount);
+            this.totalItemCount = totalItemCount;
+       }
 
-        final int lastItem = firstVisibleItem + visibleItemCount;
-        if(lastItem == totalItemCount) {
 
-            Log.d("asdf", "Last" + counter++);
-        }
     }
 
-       public class MyArrayAdapter extends ArrayAdapter<Pokemon> {
+    public class MyArrayAdapter extends ArrayAdapter<Pokemon> {
         Context context;
         ArrayList<Pokemon> arrayList;
 
@@ -158,9 +168,9 @@ public class MyListFragment extends Fragment implements AdapterView.OnItemClickL
                }
 
             tvType.setText(sb.toString());
-            //if (position == arrayList.size()-1){
-           //     loadMore();
-           // }
+            if (totalItemCount < 7 && totalItemCount > 0){
+                loadMore();
+            }
 
             return rootView;
         }
