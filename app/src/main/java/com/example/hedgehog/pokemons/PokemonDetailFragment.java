@@ -57,7 +57,7 @@ public class PokemonDetailFragment extends Fragment {
 
         StringBuilder sb = new StringBuilder("");
         for (int i = 0; i < pokemon.types.length; i++){
-            sb.append(pokemon.types[i]);
+            sb.append(pokemon.types[i].nameOfType);
             if (i !=pokemon.types.length-1){
                 sb.append(", ");
             }

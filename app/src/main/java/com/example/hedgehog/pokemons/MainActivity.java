@@ -388,13 +388,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         @Override
         protected void onPostExecute(Integer integer) {
+            loadingView.stopAnimation();
+            loadingView.setVisibility(View.GONE);
             if (arrayList.size() > 0) {
                 listFragment.setNewArrayList(arrayList);
                 flListContainer.setVisibility(View.VISIBLE);
             }
             isLoadingNow = false;
-            loadingView.stopAnimation();
-            loadingView.setVisibility(View.GONE);
 
             defineTypes();
 

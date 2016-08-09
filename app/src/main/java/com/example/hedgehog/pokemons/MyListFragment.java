@@ -33,6 +33,9 @@ public class MyListFragment extends Fragment implements AdapterView.OnItemClickL
     MyArrayAdapter adapter;
 
 
+    private int preLast;
+    int counter = 0;
+
 
     @Override
     public void onAttach(Activity activity) {
@@ -47,7 +50,7 @@ public class MyListFragment extends Fragment implements AdapterView.OnItemClickL
                 chosenTypes.add(type);
             }
         }
-        Log.d("asdf", "chosen   " + chosenTypes.toString());
+        //Log.d("asdf", "chosen   " + chosenTypes.toString());
         pokemons.clear();
         if (chosenTypes.size() == 0) {
             for (Pokemon p : arrayList) {
@@ -57,9 +60,7 @@ public class MyListFragment extends Fragment implements AdapterView.OnItemClickL
             for (Pokemon p : arrayList) {
                 boolean isAcceptable = false;
                 for (Type t : p.types) {
-                    Log.d ("asdf", t.nameOfType);
                     if (chosenTypes.contains(t)) {
-                        Log.d ("asdf", t.nameOfType);
                         isAcceptable = true;
                         break;
                     }
@@ -112,9 +113,14 @@ public class MyListFragment extends Fragment implements AdapterView.OnItemClickL
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 
+        final int lastItem = firstVisibleItem + visibleItemCount;
+        if(lastItem == totalItemCount) {
+
+            Log.d("asdf", "Last" + counter++);
+        }
     }
 
-    public class MyArrayAdapter extends ArrayAdapter<Pokemon> {
+       public class MyArrayAdapter extends ArrayAdapter<Pokemon> {
         Context context;
         ArrayList<Pokemon> arrayList;
 
@@ -152,9 +158,9 @@ public class MyListFragment extends Fragment implements AdapterView.OnItemClickL
                }
 
             tvType.setText(sb.toString());
-            if (position == arrayList.size()-1){
-                loadMore();
-            }
+            //if (position == arrayList.size()-1){
+           //     loadMore();
+           // }
 
             return rootView;
         }
