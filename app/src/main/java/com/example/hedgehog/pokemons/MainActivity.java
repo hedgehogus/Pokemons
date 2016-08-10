@@ -348,18 +348,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             .setTotalMoves(totalMoves)
                             .build();
 
-                    /*URL pictureUrl = new URL(API.getPicture(id));
+                    URL pictureUrl = new URL(API.getPicture(id));
 
                     HttpURLConnection pictureConn = (HttpURLConnection) pictureUrl.openConnection();
-                    pictureConn.setReadTimeout(100000 *//* milliseconds *//*);
-                    pictureConn.setConnectTimeout(150000 *//* milliseconds *//*);
+                    pictureConn.setReadTimeout(100000 );
+                    pictureConn.setConnectTimeout(150000 );
                     pictureConn.setRequestMethod("GET");
                     pictureConn.setDoInput(true);
                     pictureConn.connect();
-                    int responseCode2 = conn.getResponseCode();
-
                     InputStream pictureIS = pictureConn.getInputStream();
-
                     Bitmap bitmap = null;
 
                     try {
@@ -369,7 +366,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                 R.drawable.default_picture);
                     }
 
-                    pokemon.setPicture(bitmap);*/
+                    pokemon.setPicture(bitmap);
 
                     arrayList.add(pokemon);
 
@@ -380,6 +377,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             Log.d("asdf", e.getMessage());
                         }
                     }
+
+                   // if (arrayList.size() > 100){
+                        for (int r = 0; r < arrayList.size(); r++){
+                            if (!arrayList.get(r).isVisibleNow){
+                                arrayList.get(r).picture = null;
+                            }
+                        }
+                 //   }
                 }
 
             } catch (Exception e) {

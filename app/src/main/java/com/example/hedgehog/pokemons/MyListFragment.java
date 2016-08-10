@@ -39,11 +39,10 @@ public class MyListFragment extends Fragment implements AdapterView.OnItemClickL
     static final int NUM_COLUMNS = 2;
 
     ArrayList<Pokemon> pokemons = new ArrayList<>();
-    ArrayList<Integer> visiblePositions
     MyArrayAdapter adapter;
 
 
-    private int preLast;
+
     int totalItemCount = 0;
     int scrollState;
 
@@ -61,9 +60,7 @@ public class MyListFragment extends Fragment implements AdapterView.OnItemClickL
                 chosenTypes.add(type);
             }
         }
-        //Log.d("asdf", "chosen   " + chosenTypes.toString());
         pokemons.clear();
-        preLast = 0;
         if (chosenTypes.size() == 0) {
             for (Pokemon p : arrayList) {
                 pokemons.add(p);
@@ -125,6 +122,17 @@ public class MyListFragment extends Fragment implements AdapterView.OnItemClickL
 
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+        for (int i = 0; i < totalItemCount; i++ ){
+            if (i >=  firstVisibleItem-MainActivity.LIMIT*2 && i < firstVisibleItem + visibleItemCount + MainActivity.LIMIT*2) {
+                pokemons.get(i).isVisibleNow = true;
+            } else {
+                pokemons.get(i).isVisibleNow = false;
+            }
+        }
+        if (!MainActivity.isLoadingNow) {
+            AsyncTask<Void, Void, Void> at = new AsyncTaskPicrureLoading();
+            at.execute();
+        }
         if (scrollState != AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
             if (gridView.getChildCount() != 0) {
                 if (gridView.getLastVisiblePosition() == gridView.getAdapter().getCount() - 1 &&
@@ -133,8 +141,7 @@ public class MyListFragment extends Fragment implements AdapterView.OnItemClickL
                 }
             }
        } else {
-          // Log.d("asdf", "totalItemCount " + totalItemCount);
-            this.totalItemCount = totalItemCount;
+           this.totalItemCount = totalItemCount;
        }
 
 
@@ -202,46 +209,51 @@ public class MyListFragment extends Fragment implements AdapterView.OnItemClickL
 
         @Override
         protected Void doInBackground(Void... params) {
-            int id = 1;
-            URL pictureUrl = null;
-            HttpURLConnection pictureConn = null;
-            int responseCode2 = 0;
-            try {
-                pictureUrl = new URL(API.getPicture(id));
-                pictureConn = (HttpURLConnection) pictureUrl.openConnection();
-                pictureConn.setReadTimeout(100000 /* milliseconds */);
-                pictureConn.setConnectTimeout(150000 /* milliseconds */);
-                pictureConn.setRequestMethod("GET");
-                pictureConn.setDoInput(true);
-                pictureConn.connect();
-                responseCode2 = pictureConn.getResponseCode();
-            } catch (Exception e) {
-               Log.d("asdf", "" + responseCode2);
-            }
+            for (Pokemon p: pokemons) {
+                if (p.isVisibleNow && p.picture == null) {
+                    int id = p.id;
+                    URL pictureUrl = null;
+                    HttpURLConnection pictureConn = null;
+                    int responseCode2 = 0;
+                    try {
+                        pictureUrl = new URL(API.getPicture(id));
+                        pictureConn = (HttpURLConnection) pictureUrl.openConnection();
+                        pictureConn.setReadTimeout(10000);
+                        pictureConn.setConnectTimeout(15000);
+                        pictureConn.setRequestMethod("GET");
+                        pictureConn.setDoInput(true);
+                        pictureConn.connect();
+                        responseCode2 = pictureConn.getResponseCode();
+                    } catch (Exception e) {
+                        Log.d("asdf", "" + responseCode2);
+                    }
 
-            InputStream pictureIS = null;
-            try {
-                pictureIS = pictureConn.getInputStream();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+                    InputStream pictureIS = null;
+                    try {
+                        pictureIS = pictureConn.getInputStream();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
 
-            Bitmap bitmap = null;
+                    Bitmap bitmap = null;
 
-            try {
-                bitmap = BitmapFactory.decodeStream(pictureIS);
-            } catch (Exception e) {
-                bitmap = BitmapFactory.decodeResource(activity.getResources(),
-                        R.drawable.default_picture);
-            }
+                    try {
+                        bitmap = BitmapFactory.decodeStream(pictureIS);
+                    } catch (Exception e) {
+                        bitmap = BitmapFactory.decodeResource(activity.getResources(),
+                                R.drawable.default_picture);
+                    }
 
-            pokemon.setPicture(bitmap);
-            adapter.notifyDataSetChanged();
-            if (pictureIS != null) {
-                try {
-                    pictureIS.close();
-                } catch (IOException e) {
-                    Log.d("asdf", e.getMessage());
+                    p.setPicture(bitmap);
+                    publishProgress();
+
+                    if (pictureIS != null) {
+                        try {
+                            pictureIS.close();
+                        } catch (IOException e) {
+                            Log.d("asdf", e.getMessage());
+                        }
+                    }
                 }
             }
             return null;
@@ -250,6 +262,7 @@ public class MyListFragment extends Fragment implements AdapterView.OnItemClickL
         @Override
         protected void onProgressUpdate(Void... values) {
             super.onProgressUpdate(values);
+            adapter.notifyDataSetChanged();
         }
     }
 

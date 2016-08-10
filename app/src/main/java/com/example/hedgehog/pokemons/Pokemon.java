@@ -19,6 +19,7 @@ public class Pokemon {
     final int weight;
     final int totalMoves;
     Bitmap picture;
+    boolean isVisibleNow = true;
 
     private Pokemon(int id, String name, Type[] types, int attack, int defence, int hp, int spAttack, int spDefence, int speed, int weight, int totalMoves){
         this.id = id;
@@ -51,6 +52,7 @@ public class Pokemon {
         int speed = 0;
         int weight = 0;
         int totalMoves = 0;
+
 
 
 
