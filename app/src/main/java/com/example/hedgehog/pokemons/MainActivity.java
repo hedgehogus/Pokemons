@@ -54,7 +54,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     static AsyncTask<Integer,Void,Integer> at;
     static final int LIMIT = 18;
-    static int offset = 0;
 
     static boolean isLoadingNow = false;
     static boolean isDataExists = false;
@@ -100,17 +99,22 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         loadingView = (LoadingView) findViewById(R.id.animView);
         bLoad = (Button) findViewById(R.id.bLoad);
         flListContainer.setVisibility(View.GONE);
-        listFragment = new MyListFragment();
-        detail = new PokemonDetailFragment();
+        if (listFragment == null) {
+            listFragment = new MyListFragment();
+        }
+        if (detail == null) {
+            detail = new PokemonDetailFragment();
+        }
         fragmentManager = getFragmentManager();
-        fragmentManager.beginTransaction().add(R.id.flListContainer,listFragment, "listFragment").commit();
+
+        fragmentManager.beginTransaction().add(R.id.flListContainer, listFragment, "listFragment").commit();
 
         bLoad.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 at = new MyAsyncTask();
                 if (isNetworkExist(getApplicationContext()) && !isLoadingNow) {
-                    at.execute(LIMIT, offset);
+                    at.execute(LIMIT);
                     loadingView.startAnimation1();
                     loadingView.setVisibility(View.VISIBLE);
                     loadingView.isRunning = true;
@@ -201,7 +205,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onSaveInstanceState(Bundle outState) {
 
         fragmentManager.beginTransaction().remove(detail).commit();
-        fragmentManager.beginTransaction().remove(listFragment).commit();
+       // fragmentManager.beginTransaction().remove(listFragment).commit();
         super.onSaveInstanceState(outState);
         if (isDataExists) {
             outState.putInt("key", 1);
@@ -268,9 +272,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         @Override
         protected Integer doInBackground(Integer... params) {
             int limit = params [0];
-            int tempOffset = params [1];
+            int tempOffset = arrayList.size();
             int resp = 1;
-            offset = arrayList.size()+limit;
+            Log.d("asdf", "limit: " + limit + "   arraySize:" + arrayList.size() + "    offset:" + tempOffset);
+
             isLoadingNow = true;
             String responce = null;
             InputStream is = null;
@@ -343,11 +348,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             .setTotalMoves(totalMoves)
                             .build();
 
-                    URL pictureUrl = new URL(API.getPicture(id));
+                    /*URL pictureUrl = new URL(API.getPicture(id));
 
                     HttpURLConnection pictureConn = (HttpURLConnection) pictureUrl.openConnection();
-                    pictureConn.setReadTimeout(100000 /* milliseconds */);
-                    pictureConn.setConnectTimeout(150000 /* milliseconds */);
+                    pictureConn.setReadTimeout(100000 *//* milliseconds *//*);
+                    pictureConn.setConnectTimeout(150000 *//* milliseconds *//*);
                     pictureConn.setRequestMethod("GET");
                     pictureConn.setDoInput(true);
                     pictureConn.connect();
@@ -357,9 +362,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                     Bitmap bitmap = null;
 
-                       bitmap = BitmapFactory.decodeStream(pictureIS);
+                    try {
+                        bitmap = BitmapFactory.decodeStream(pictureIS);
+                    } catch (Exception e) {
+                        bitmap = BitmapFactory.decodeResource(thisActivity.getResources(),
+                                R.drawable.default_picture);
+                    }
 
-                    pokemon.setPicture(bitmap);
+                    pokemon.setPicture(bitmap);*/
 
                     arrayList.add(pokemon);
 
@@ -401,7 +411,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             if (arrayList.size() == 0){
                 isDataExists = false;
-                offset = 0;
                 bLoad.setVisibility(View.VISIBLE);
                 Toast.makeText(thisActivity, "Try later", Toast.LENGTH_SHORT ).show();
             }

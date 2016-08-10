@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -17,6 +20,12 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
 import java.util.ArrayList;
 
 
@@ -30,6 +39,7 @@ public class MyListFragment extends Fragment implements AdapterView.OnItemClickL
     static final int NUM_COLUMNS = 2;
 
     ArrayList<Pokemon> pokemons = new ArrayList<>();
+    ArrayList<Integer> visiblePositions
     MyArrayAdapter adapter;
 
 
@@ -179,13 +189,68 @@ public class MyListFragment extends Fragment implements AdapterView.OnItemClickL
     private void loadMore(){
         if(!MainActivity.isLoadingNow) {
             MainActivity.at = new MainActivity.MyAsyncTask();
-            MainActivity.at.execute(MainActivity.LIMIT, MainActivity.offset);
+            MainActivity.at.execute(MainActivity.LIMIT);
             MainActivity.loadingView.setVisibility(View.VISIBLE);
             MainActivity.loadingView.isRunning = true;
             MainActivity.loadingView.startAnimation1();
 
         }
 
+    }
+
+    private class AsyncTaskPicrureLoading extends AsyncTask<Void,Void,Void>{
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            int id = 1;
+            URL pictureUrl = null;
+            HttpURLConnection pictureConn = null;
+            int responseCode2 = 0;
+            try {
+                pictureUrl = new URL(API.getPicture(id));
+                pictureConn = (HttpURLConnection) pictureUrl.openConnection();
+                pictureConn.setReadTimeout(100000 /* milliseconds */);
+                pictureConn.setConnectTimeout(150000 /* milliseconds */);
+                pictureConn.setRequestMethod("GET");
+                pictureConn.setDoInput(true);
+                pictureConn.connect();
+                responseCode2 = pictureConn.getResponseCode();
+            } catch (Exception e) {
+               Log.d("asdf", "" + responseCode2);
+            }
+
+            InputStream pictureIS = null;
+            try {
+                pictureIS = pictureConn.getInputStream();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            Bitmap bitmap = null;
+
+            try {
+                bitmap = BitmapFactory.decodeStream(pictureIS);
+            } catch (Exception e) {
+                bitmap = BitmapFactory.decodeResource(activity.getResources(),
+                        R.drawable.default_picture);
+            }
+
+            pokemon.setPicture(bitmap);
+            adapter.notifyDataSetChanged();
+            if (pictureIS != null) {
+                try {
+                    pictureIS.close();
+                } catch (IOException e) {
+                    Log.d("asdf", e.getMessage());
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
+        }
     }
 
 
