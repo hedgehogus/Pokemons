@@ -27,6 +27,7 @@ public class PokemonDetailFragment extends Fragment {
     TextView tvSpeedValue;
     TextView tvWeightValue;
     TextView tvTotalMovesValue;
+    Pokemon pokemon;
 
     public PokemonDetailFragment(){
         super();
@@ -52,6 +53,7 @@ public class PokemonDetailFragment extends Fragment {
     }
 
     public void setValues(Pokemon pokemon){
+        this.pokemon = pokemon;
         ivItem.setImageBitmap(pokemon.picture);
         tvNameItem.setText(pokemon.name + " #" + pokemon.id);
 
@@ -73,6 +75,11 @@ public class PokemonDetailFragment extends Fragment {
         tvWeightValue.setText(Integer.toString(pokemon.weight));
         tvTotalMovesValue.setText(Integer.toString(pokemon.totalMoves));
     }
+
+    public void notifPicture(){
+        ivItem.setImageBitmap(pokemon.picture);
+    }
+
 
     public void setVisibility(boolean b){
 

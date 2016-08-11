@@ -127,6 +127,7 @@ public class MyListFragment extends Fragment implements AdapterView.OnItemClickL
                 pokemons.get(i).isVisibleNow = true;
             } else {
                 pokemons.get(i).isVisibleNow = false;
+                pokemons.get(i).setPicture(null);
             }
         }
         if (!MainActivity.isLoadingNow) {
@@ -263,6 +264,7 @@ public class MyListFragment extends Fragment implements AdapterView.OnItemClickL
         protected void onProgressUpdate(Void... values) {
             super.onProgressUpdate(values);
             adapter.notifyDataSetChanged();
+            MainActivity.detail.notifPicture();
         }
     }
 

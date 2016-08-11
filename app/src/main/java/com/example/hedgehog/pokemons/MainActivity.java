@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     ActionBarDrawerToggle mDrawerToggle;
 
     FragmentManager fragmentManager;
-    PokemonDetailFragment detail;
+    static PokemonDetailFragment detail;
     static MyListFragment listFragment;
 
     static FrameLayout flListContainer, flItemContainer;
@@ -203,10 +203,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-
-        fragmentManager.beginTransaction().remove(detail).commit();
-       // fragmentManager.beginTransaction().remove(listFragment).commit();
         super.onSaveInstanceState(outState);
+        fragmentManager.beginTransaction().remove(detail).commit();
         if (isDataExists) {
             outState.putInt("key", 1);
         }
@@ -378,13 +376,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         }
                     }
 
-                   // if (arrayList.size() > 100){
+                    if (arrayList.size() > 100){
                         for (int r = 0; r < arrayList.size(); r++){
                             if (!arrayList.get(r).isVisibleNow){
                                 arrayList.get(r).picture = null;
                             }
                         }
-                 //   }
+                     }
                 }
 
             } catch (Exception e) {
