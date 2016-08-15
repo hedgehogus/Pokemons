@@ -172,6 +172,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 super.onBackPressed();
                 typesArray.clear();
                 arrayList.clear();
+                at.cancel(true);
+                thisActivity.finish();
             }
         }
     }
@@ -183,6 +185,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             detail.setVisibility(false);
             fragmentManager.beginTransaction().hide(detail).commit();
             fragmentManager.beginTransaction().show(listFragment).commit();
+        }
+        if (arrayList.size() == 0 &&!isLoadingNow){
+            bLoad.setVisibility(View.VISIBLE);
         }
 
         Fragment f = fragmentManager.findFragmentByTag("listFragment");
@@ -203,8 +208,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        fragmentManager.beginTransaction().remove(detail).commit();
+
+        Fragment f = fragmentManager.findFragmentByTag("detail");
+        if (f != null) {
+            fragmentManager.beginTransaction().remove(detail).commit();
+        }
         if (isDataExists) {
             outState.putInt("key", 1);
         }
@@ -278,7 +286,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             String responce = null;
             InputStream is = null;
             String myurl = API.getPockemonList(limit,tempOffset);
-
+            if (isCancelled()) return 0;
             try {
                 URL url = new URL(myurl);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -292,8 +300,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 if (responseCode!=200){
                     Log.d("asdf", "" + responseCode);
                 }
-
+                if (isCancelled()) return 0;
                 is = conn.getInputStream();
+                if (isCancelled()) return 0;
                 InputStreamReader isr = new InputStreamReader(is);
                 BufferedReader br = new BufferedReader(isr);
                 StringBuilder sb = new StringBuilder();
@@ -313,7 +322,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 } catch (JSONException e) {
                     Log.d("asdf",e.getMessage());
                 }
-
+                if (isCancelled()) return 0;
                 JSONArray jsonObjects = jsonResponce.optJSONArray("objects");
                 for (int i = 0; i < jsonObjects.length(); i++ ){
                     JSONObject object = jsonObjects.optJSONObject(i);
@@ -325,6 +334,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         JSONObject type = jsonTypes.optJSONObject(n);
                         types [n] = type.optString("name");
                     }
+                    if (isCancelled()) return 0;
                     Pokemon.PokeBuilder builder = new Pokemon.PokeBuilder(id, name, types);
 
                     int attack = object.optInt("attack");
@@ -356,7 +366,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     pictureConn.connect();
                     InputStream pictureIS = pictureConn.getInputStream();
                     Bitmap bitmap = null;
-
+                    if (isCancelled()) return 0;
                     try {
                         bitmap = BitmapFactory.decodeStream(pictureIS);
                     } catch (Exception e) {
@@ -402,20 +412,22 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         @Override
         protected void onPostExecute(Integer integer) {
-            loadingView.stopAnimation();
-            loadingView.setVisibility(View.GONE);
-            if (arrayList.size() > 0) {
-                listFragment.setNewArrayList(arrayList);
-                flListContainer.setVisibility(View.VISIBLE);
-            }
-            isLoadingNow = false;
+            if (integer == 1) {
+                loadingView.stopAnimation();
+                loadingView.setVisibility(View.GONE);
+                if (arrayList.size() > 0) {
+                    listFragment.setNewArrayList(arrayList);
+                    flListContainer.setVisibility(View.VISIBLE);
+                }
+                isLoadingNow = false;
 
-            defineTypes();
+                defineTypes();
 
-            if (arrayList.size() == 0){
-                isDataExists = false;
-                bLoad.setVisibility(View.VISIBLE);
-                Toast.makeText(thisActivity, "Try later", Toast.LENGTH_SHORT ).show();
+                if (arrayList.size() == 0) {
+                    isDataExists = false;
+                    bLoad.setVisibility(View.VISIBLE);
+                    Toast.makeText(thisActivity, "Try later", Toast.LENGTH_SHORT).show();
+                }
             }
         }
     }
