@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             @Override
             public void onClick(View v) {
                 at = new MyAsyncTask();
-                if (isNetworkExist(getApplicationContext()) && !isLoadingNow) {
+                if (isNetworkExist(getApplicationContext())) {
                     at.execute(LIMIT);
                     loadingView.startAnimation1();
                     loadingView.setVisibility(View.VISIBLE);
@@ -174,6 +174,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 arrayList.clear();
                 at.cancel(true);
                 thisActivity.finish();
+                isLoadingNow = false;
             }
         }
     }
@@ -386,13 +387,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         }
                     }
 
-                    if (arrayList.size() > 100){
-                        for (int r = 0; r < arrayList.size(); r++){
-                            if (!arrayList.get(r).isVisibleNow){
-                                arrayList.get(r).picture = null;
-                            }
-                        }
-                     }
+                   // if (arrayList.size() > 100){
+                   //     for (int r = 0; r < arrayList.size(); r++){
+                   //        if (!arrayList.get(r).isVisibleNow){
+                   //           arrayList.get(r).picture = null;
+                   //        }
+                   //     }
+                   // }
                 }
 
             } catch (Exception e) {
