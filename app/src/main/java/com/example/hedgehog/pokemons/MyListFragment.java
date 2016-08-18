@@ -211,7 +211,7 @@ public class MyListFragment extends Fragment implements AdapterView.OnItemClickL
 
         @Override
         protected Void doInBackground(Void... params) {
-            
+
             for (int i = 0; i < pokemons.size(); i ++) {
 
                 Pokemon p = pokemons.get(i);
